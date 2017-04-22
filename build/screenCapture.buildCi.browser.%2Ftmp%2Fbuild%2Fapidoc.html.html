@@ -1,0 +1,140 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/mongodb-js/mongoose-autopopulate">mongoose-autopopulate (v0.5.0)</a>
+</h1>
+<h4>Always populate() certain fields in your mongoose schemas</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-autopopulate">module mongoose-autopopulate</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-autopopulate.mongoose-autopopulate">
+            function <span class="apidocSignatureSpan"></span>mongoose-autopopulate
+            <span class="apidocSignatureSpan">(schema)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-autopopulate" id="apidoc.module.mongoose-autopopulate">module mongoose-autopopulate</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-autopopulate.mongoose-autopopulate" id="apidoc.element.mongoose-autopopulate.mongoose-autopopulate">
+        function <span class="apidocSignatureSpan"></span>mongoose-autopopulate
+        <span class="apidocSignatureSpan">(schema)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">mongoose-autopopulate = function (schema) {
+  var pathsToPopulate = [];
+
+  eachPathRecursive(schema, function(pathname, schemaType) {
+    var option;
+    if (schemaType.options &amp;&amp; schemaType.options.autopopulate) {
+      option = schemaType.options.autopopulate;
+      pathsToPopulate.push({
+        options: defaultOptions(pathname, schemaType.options),
+        autopopulate: option
+      });
+    } else if (schemaType.options &amp;&amp;
+        schemaType.options.type &amp;&amp;
+        schemaType.options.type[0] &amp;&amp;
+        schemaType.options.type[0].autopopulate) {
+      option = schemaType.options.type[0].autopopulate;
+      pathsToPopulate.push({
+        options: defaultOptions(pathname, schemaType.options.type[0]),
+        autopopulate: option
+      });
+    }
+  });
+
+  if (schema.virtuals) {
+    Object.keys(schema.virtuals).forEach(function(pathname) {
+      if (schema.virtuals[pathname].options.autopopulate) {
+        pathsToPopulate.push({
+          options: defaultOptions(pathname, schema.virtuals[pathname].options),
+          autopopulate: schema.virtuals[pathname].options.autopopulate,
+        });
+      }
+    });
+  }
+
+  var autopopulateHandler = function() {
+    if (this._mongooseOptions &amp;&amp; this._mongooseOptions.lean) return;
+    var numPaths = pathsToPopulate.length;
+    for (var i = 0; i &lt; numPaths; ++i) {
+      processOption.call(this,
+        pathsToPopulate[i].autopopulate, pathsToPopulate[i].options);
+    }
+  };
+
+  schema.
+    pre('find', autopopulateHandler).
+    pre('findOne', autopopulateHandler);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
